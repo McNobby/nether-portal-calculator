@@ -2,7 +2,8 @@
   <div class="flex flex-col w-full h-full items-center justify-center gap-3">
     <div class="flex">
       <CoordinateInput v-model="overworldCoords" dimension="Overworld" />
-      <CoordinateInput v-model="netherCoords" dimension="Nether" />
+      <!-- Bind to the computed property netherCoordsModel -->
+      <CoordinateInput v-model="netherCoordsModel" dimension="Nether" />
     </div>
     <div>
       <TextInput
@@ -11,9 +12,6 @@
         placeholder="/execute in..."
         label="Output from F3+C"
       ></TextInput>
-
-      {{ overworldCoords }}
-      {{ netherCoords }}
     </div>
   </div>
 </template>
@@ -21,10 +19,11 @@
 <script setup lang="ts">
 import CoordinateInput from './Inputs/CoordinateInput.vue'
 import TextInput from './Inputs/TextInput.vue'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, computed } from 'vue'
 
 const command = ref('')
 
+// Keep `netherCoords` reactive
 const overworldCoords = reactive({
   x: 0,
   y: 0,
@@ -35,6 +34,17 @@ const netherCoords = reactive({
   x: 0,
   y: 0,
   z: 0,
+})
+
+// Use computed for v-model handling
+const netherCoordsModel = computed({
+  get: () => netherCoords,
+  set: (newValue) => {
+    // Directly mutate the properties when setting
+    netherCoords.x = newValue.x
+    netherCoords.y = newValue.y
+    netherCoords.z = newValue.z
+  },
 })
 
 let stopNether = false
