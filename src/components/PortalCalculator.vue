@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-full h-full items-center justify-center gap-3">
     <div class="flex">
-      <CoordinateInput v-model="overworldCoords" dimension="Overworld" />
+      <CoordinateInput v-model="overworldCoordsModel" dimension="Overworld" />
       <!-- Bind to the computed property netherCoordsModel -->
       <CoordinateInput v-model="netherCoordsModel" dimension="Nether" />
     </div>
@@ -19,18 +19,18 @@
 <script setup lang="ts">
 import CoordinateInput from './Inputs/CoordinateInput.vue'
 import TextInput from './Inputs/TextInput.vue'
-import { reactive, ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const command = ref('')
 
 // Keep `netherCoords` reactive
-const overworldCoords = reactive({
+const overworldCoords = ref({
   x: 0,
   y: 0,
   z: 0,
 })
 
-const netherCoords = reactive({
+const netherCoords = ref({
   x: 0,
   y: 0,
   z: 0,
@@ -41,9 +41,19 @@ const netherCoordsModel = computed({
   get: () => netherCoords,
   set: (newValue) => {
     // Directly mutate the properties when setting
-    netherCoords.x = newValue.x
-    netherCoords.y = newValue.y
-    netherCoords.z = newValue.z
+    netherCoords.value.x = newValue.value.x
+    netherCoords.value.y = newValue.value.y
+    netherCoords.value.z = newValue.value.z
+  },
+})
+
+const overworldCoordsModel = computed({
+  get: () => netherCoords,
+  set: (newValue) => {
+    // Directly mutate the properties when setting
+    overworldCoords.value.x = newValue.value.x
+    overworldCoords.value.y = newValue.value.y
+    overworldCoords.value.z = newValue.value.z
   },
 })
 
@@ -55,9 +65,9 @@ watch(netherCoords, (coords) => {
 
   stopOverworld = true
 
-  overworldCoords.x = coords.x * 8
-  overworldCoords.y = coords.y
-  overworldCoords.z = coords.z * 8
+  overworldCoords.value.x = coords.x * 8
+  overworldCoords.value.y = coords.y
+  overworldCoords.value.z = coords.z * 8
 
   setTimeout(() => {
     stopOverworld = false
@@ -69,9 +79,9 @@ watch(overworldCoords, (coords) => {
 
   stopNether = true
 
-  netherCoords.x = Math.floor(coords.x / 8)
-  netherCoords.y = coords.y
-  netherCoords.z = Math.floor(coords.z / 8)
+  netherCoords.value.x = Math.floor(coords.x / 8)
+  netherCoords.value.y = coords.y
+  netherCoords.value.z = Math.floor(coords.z / 8)
 
   setTimeout(() => {
     stopNether = false
@@ -96,13 +106,13 @@ watch(command, (newCommand) => {
   const [x, y, z] = newCoords.split(' ')
 
   if (dimension === 'overworld') {
-    overworldCoords.x = parseInt(x)
-    overworldCoords.y = parseInt(y)
-    overworldCoords.z = parseInt(z)
+    overworldCoords.value.x = parseInt(x)
+    overworldCoords.value.y = parseInt(y)
+    overworldCoords.value.z = parseInt(z)
   } else {
-    netherCoords.x = parseInt(x)
-    netherCoords.y = parseInt(y)
-    netherCoords.z = parseInt(z)
+    netherCoords.value.x = parseInt(x)
+    netherCoords.value.y = parseInt(y)
+    netherCoords.value.z = parseInt(z)
   }
 })
 </script>
