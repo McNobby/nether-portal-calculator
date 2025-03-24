@@ -21,8 +21,8 @@ const coords = reactive(model)
 <template>
   <CommonCard class="flex flex-col items-center content-center gap-3">
     <h3>{{ dimension }}</h3>
-    <NumberInput v-model="coords.x" label="X:" />
-    <NumberInput v-model="coords.y" label="Y:" />
-    <NumberInput v-model="coords.z" label="Z:" />
+    <NumberInput v-model.number="coords.x" label="X:" />
+    <NumberInput v-model.number="coords.y" label="Y:" />
+    <NumberInput v-model.number="coords.z" label="Z:" />
   </CommonCard>
 </template>

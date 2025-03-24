@@ -3,8 +3,7 @@ name: Build and Deploy Docker Image
 on:
   push:
     branches:
-      - main # Adjust to your deployment branch
-
+      - main
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
