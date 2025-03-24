@@ -21,9 +21,9 @@
 <script setup lang="ts">
 import CoordinateInput from './Inputs/CoordinateInput.vue'
 import TextInput from './Inputs/TextInput.vue'
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
-const command = ''
+const command = ref('')
 
 const overworldCoords = reactive({
   x: 0,
@@ -66,5 +66,33 @@ watch(overworldCoords, (coords) => {
   setTimeout(() => {
     stopNether = false
   }, 5)
+})
+
+watch(command, (newCommand) => {
+  const commandRegex = new RegExp(
+    /\/execute in minecraft:(overworld|nether) run tp @s ((-?\d+(\.\d+)?\s){3})-?\d+(\.\d+)?\s-?\d+(\.\d+)?/,
+  )
+
+  if (!commandRegex.test(newCommand)) return
+
+  const result = commandRegex.exec(newCommand)
+  if (!result) return
+  if (!result[1]) return
+  if (!result[2]) return
+
+  const dimension = result[1]
+  const newCoords = result[2] as string
+
+  const [x, y, z] = newCoords.split(' ')
+
+  if (dimension === 'overworld') {
+    overworldCoords.x = parseInt(x)
+    overworldCoords.y = parseInt(y)
+    overworldCoords.z = parseInt(z)
+  } else {
+    netherCoords.x = parseInt(x)
+    netherCoords.y = parseInt(y)
+    netherCoords.z = parseInt(z)
+  }
 })
 </script>
