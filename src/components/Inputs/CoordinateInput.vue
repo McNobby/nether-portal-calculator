@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import TextInput from './TextInput.vue'
 import CommonCard from '../CommonCard.vue'
 import { reactive } from 'vue'
+import NumberInput from './NumberInput.vue'
 
 const { dimension } = defineProps<{
   dimension: string
@@ -21,8 +21,8 @@ const coords = reactive(model)
 <template>
   <CommonCard class="flex flex-col items-center content-center gap-3">
     <h3>{{ dimension }}</h3>
-    <TextInput v-model="coords.x" label="X:" />
-    <TextInput v-model="coords.y" label="Y:" />
-    <TextInput v-model="coords.z" label="Z:" />
+    <NumberInput v-model="coords.x" label="X:" />
+    <NumberInput v-model="coords.y" label="Y:" />
+    <NumberInput v-model="coords.z" label="Z:" />
   </CommonCard>
 </template>
