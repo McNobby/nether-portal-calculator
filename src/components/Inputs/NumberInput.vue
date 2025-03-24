@@ -8,6 +8,11 @@ const { label, placeholder, vertical } = defineProps<{
   placeholder?: string
   vertical?: boolean
 }>()
+
+const handleInput = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^0-9.-]/g, '')
+}
 </script>
 
 <template>
@@ -19,6 +24,7 @@ const { label, placeholder, vertical } = defineProps<{
       class="bg-slate-700 p-1 rounded-md shadow"
       :id
       type="text"
+      @input="handleInput"
     />
   </div>
 </template>
