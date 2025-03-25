@@ -11,8 +11,14 @@ const { label, placeholder, vertical } = defineProps<{
 </script>
 
 <template>
-  <div class="flex gap-3" :class="{ 'flex-col': vertical }">
+  <div class="flex gap-3 w-full" :class="{ 'flex-col': vertical }">
     <label :for="id">{{ label }}</label>
-    <input v-model="text" :placeholder class="bg-slate-700 p-1 rounded-md shadow" :id type="text" />
+    <input
+      v-model="text"
+      :placeholder
+      class="bg-slate-700 p-1 rounded-md shadow w-full"
+      :id
+      type="text"
+    />
   </div>
 </template>
