@@ -68,15 +68,12 @@ function parseCommand() {
     /\/execute in minecraft:(overworld|nether) run tp @s ((-?\d+(\.\d+)?\s){3})-?\d+(\.\d+)?\s-?\d+(\.\d+)?/,
   )
 
-  console.log('here', commandRegex.test(command.value), commandRegex.exec(command.value))
   if (!commandRegex.test(command.value)) return
 
   const result = commandRegex.exec(command.value)
   if (!result) return
   if (!result[1]) return
   if (!result[2]) return
-
-  console.log('here too')
 
   const dimension = result[1]
   const newCoords = result[2] as string
