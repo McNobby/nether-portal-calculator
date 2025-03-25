@@ -1,17 +1,16 @@
 <template>
   <div class="flex flex-col w-full h-full items-center justify-center gap-3">
-    <div class="flex">
+    <div class="flex flex-col md:flex-row">
       <CoordinateInput v-model="overworldCoords" dimension="Overworld" />
       <CoordinateInput v-model="netherCoords" dimension="Nether" />
     </div>
-    <div>
-      <TextInput
-        v-model="command"
-        :vertical="true"
-        placeholder="/execute in..."
-        label="Output from F3+C"
-      ></TextInput>
-    </div>
+    <TextInput
+      class="w-full px-4"
+      v-model="command"
+      :vertical="true"
+      placeholder="/execute in..."
+      label="Output from F3+C"
+    ></TextInput>
   </div>
 </template>
 
