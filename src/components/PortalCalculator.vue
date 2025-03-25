@@ -1,9 +1,8 @@
 <template>
   <div class="flex flex-col w-full h-full items-center justify-center gap-3">
     <div class="flex">
-      <CoordinateInput v-model="overworldCoordsModel" dimension="Overworld" />
-      <!-- Bind to the computed property netherCoordsModel -->
-      <CoordinateInput v-model="netherCoordsModel" dimension="Nether" />
+      <CoordinateInput v-model="overworldCoords" dimension="Overworld" />
+      <CoordinateInput v-model="netherCoords" dimension="Nether" />
     </div>
     <div>
       <TextInput
@@ -19,86 +18,65 @@
 <script setup lang="ts">
 import CoordinateInput from './Inputs/CoordinateInput.vue'
 import TextInput from './Inputs/TextInput.vue'
-import { ref, watch, computed } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 
 const command = ref('')
 
-// Keep `netherCoords` reactive
-const overworldCoords = ref({
-  x: 0,
-  y: 0,
-  z: 0,
-})
-
-const netherCoords = ref({
-  x: 0,
-  y: 0,
-  z: 0,
-})
-
-// Use computed for v-model handling
-const netherCoordsModel = computed({
-  get: () => netherCoords,
-  set: (newValue) => {
-    // Directly mutate the properties when setting
-    netherCoords.value.x = newValue.value.x
-    netherCoords.value.y = newValue.value.y
-    netherCoords.value.z = newValue.value.z
-  },
-})
-
-const overworldCoordsModel = computed({
-  get: () => netherCoords,
-  set: (newValue) => {
-    // Directly mutate the properties when setting
-    overworldCoords.value.x = newValue.value.x
-    overworldCoords.value.y = newValue.value.y
-    overworldCoords.value.z = newValue.value.z
-  },
-})
+const overworldCoords = ref({ x: 0, y: 0, z: 0 })
+const netherCoords = ref({ x: 0, y: 0, z: 0 })
 
 let stopNether = false
 let stopOverworld = false
 
-watch(netherCoords, (coords) => {
-  if (stopNether) return
+watch(
+  overworldCoords,
+  (coords) => {
+    if (stopOverworld) return
+    stopNether = true
 
-  stopOverworld = true
+    netherCoords.value.x = Math.floor(coords.x / 8)
+    netherCoords.value.y = coords.y
+    netherCoords.value.z = Math.floor(coords.z / 8)
 
-  overworldCoords.value.x = coords.x * 8
-  overworldCoords.value.y = coords.y
-  overworldCoords.value.z = coords.z * 8
+    setTimeout(() => {
+      stopNether = false
+    }, 5)
+  },
+  { deep: true },
+)
 
-  setTimeout(() => {
-    stopOverworld = false
-  }, 5)
-})
+watch(
+  netherCoords,
+  (coords) => {
+    if (stopNether) return
+    stopOverworld = true
 
-watch(overworldCoords, (coords) => {
-  if (stopOverworld) return
+    overworldCoords.value.x = coords.x * 8
+    overworldCoords.value.y = coords.y
+    overworldCoords.value.z = coords.z * 8
 
-  stopNether = true
+    setTimeout(() => {
+      stopOverworld = false
+    }, 5)
+  },
+  { deep: true },
+)
+watchEffect(parseCommand)
 
-  netherCoords.value.x = Math.floor(coords.x / 8)
-  netherCoords.value.y = coords.y
-  netherCoords.value.z = Math.floor(coords.z / 8)
-
-  setTimeout(() => {
-    stopNether = false
-  }, 5)
-})
-
-watch(command, (newCommand) => {
+function parseCommand() {
   const commandRegex = new RegExp(
     /\/execute in minecraft:(overworld|nether) run tp @s ((-?\d+(\.\d+)?\s){3})-?\d+(\.\d+)?\s-?\d+(\.\d+)?/,
   )
 
-  if (!commandRegex.test(newCommand)) return
+  console.log('here', commandRegex.test(command.value), commandRegex.exec(command.value))
+  if (!commandRegex.test(command.value)) return
 
-  const result = commandRegex.exec(newCommand)
+  const result = commandRegex.exec(command.value)
   if (!result) return
   if (!result[1]) return
   if (!result[2]) return
+
+  console.log('here too')
 
   const dimension = result[1]
   const newCoords = result[2] as string
@@ -114,5 +92,5 @@ watch(command, (newCommand) => {
     netherCoords.value.y = parseInt(y)
     netherCoords.value.z = parseInt(z)
   }
-})
+}
 </script>
